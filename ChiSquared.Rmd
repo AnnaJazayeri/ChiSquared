@@ -4,6 +4,7 @@ output: pdf_document
 date: "2024-03-02"
 ---
 
+## Experience with calculating chi-squared and p-values.
 
 
 
