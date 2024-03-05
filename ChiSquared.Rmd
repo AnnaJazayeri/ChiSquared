@@ -3,13 +3,93 @@ title: "ChiSquared"
 output: pdf_document
 date: "2024-03-02"
 ---
-
 ## Experience with calculating chi-squared and p-values.
 
-
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r}
+classes_observe <- matrix(c(41, 10, 32, 2, 4, 12, 11, 31, 5, 10, 15, 30), ncol = 2, byrow = TRUE,
+                   dimnames = list(c("Math (F-B)", "Math (A)", "English (F-B)", "English (A)", "Science (F-B)", "Science (A)"),
+                                   c("Studied", "No Studying")))
+classes_observe
+```
+```{r}
+observed <- matrix(c(50,32,58,63), ncol = 2, byrow = TRUE,
+                   dimnames = list(c("F-B",  "A"),
+                                   c("Studied", "No Studying")))
+observed
 ```
 
+```{r}
+# (a) Calculate marginal frequencies
+row_marginals <- rowSums(observed)
+col_marginals <- colSums(observed)
+
+# Print row and column marginals
+print("Row Marginals:")
+print(row_marginals)
+
+print("Column Marginals:")
+print(col_marginals)
+```
+```{r}
+# (b) Calculate row proportions
+row_proportions <- observed / sum(row_marginals)
+row_proportions
+```
+```{r}
+# (c) Calculate column proportions
+col_proportions <- observed / sum(col_marginals)
+col_proportions
+```
+```{r}
+# (d) Calculate expected values
+expected <- outer(row_marginals, col_marginals) / sum(observed)
+expected
+```
+```{r}
+# (e) Calculate residuals
+residuals <- (observed - expected) / sqrt(expected)
+residuals
+```
+```{r}
+# (f) Calculate chi-squared values for each residual
+chi_squared_values <- residuals^2
+chi_squared_values
+```
+```{r}
+# (g) Calculate total chi-square measure
+total_chi_squared <- sum(chi_squared_values)
+total_chi_squared
+```
+
+
+```{r}
+# (h) Find the p-value
+degrees_of_freedom <- (nrow(observed) - 1) * (ncol(observed) - 1)
+p_value <- 1 - pchisq(total_chi_squared, df = degrees_of_freedom)
+p_value
+```
+
+
+```{r}
+# (i) Conclusion
+confidence_level <- 0.85
+if (p_value < 1 - confidence_level) {
+  cat("There is a significant association between studying and getting an A across all subjects at 85% confidence level.\n")
+} else {
+  cat("There is no significant association between studying and getting an A across all subjects at 85% confidence level.\n")
+}
+
+# Check if the results would be significant by a more typical publishable standard (95% confidence)
+publishable_confidence_level <- 0.95
+if (p_value < 1 - publishable_confidence_level) {
+  cat("The results are significant by a more typical publishable standard (95% confidence).\n")
+} else {
+  cat("The results are not significant by a more typical publishable standard (95% confidence).\n")
+}
+```
+At the 85% confidence level, I compare the p-value to the significance level (α). For an 85% confidence level, α would be 1−0.85=0.15.
+Conclusion for 85% Confidence Level: The p-value (0.067655213) is less than the 15% significance level (0.15). Since the p-value is lower than the significance level, we reject the null hypothesis. There is evidence of a significant association between studying and getting an A across all subjects at the 85% confidence level.
+At the 95% confidence level, I compare the p-value to the significance level (α). For an 95% confidence level, α would be 1−0.95=0.05.
+Conclusion at 95% Confidence Level: The p-value (0.067655213) is greater than the 5% significance level (0.05). Since the p-value is higher than the significance level, we fail to reject the null hypothesis. There is not enough evidence to claim a significant association between studying and getting an A across all subjects at the 95% confidence level.
+Result: At 85% Confidence Level: Significant association, but at 95% Confidence Level: Not a significant association.
 
