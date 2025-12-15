@@ -1,1 +1,1 @@
-# ChiSquared
+# Chi Squared
